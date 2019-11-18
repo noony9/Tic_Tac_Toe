@@ -13,8 +13,10 @@ namespace Tic_Tac_Toe
     public partial class Form1 : Form
     {
         // deterimine who's turn it is
-        bool turn = true; // true equals X turn; false = O turn
-        int turnCount = 0; // to increment each turn
+        bool turn = true; // true equals Player 1 turn (X); false = Player 2 turn (O)
+        int turnCount = 0; // to increment each turn (for Draw)
+        int playerOneScore = 0;
+        int playerTwoScore = 0;
         public Form1()
         {
             InitializeComponent();
@@ -32,8 +34,20 @@ namespace Tic_Tac_Toe
 
         private void NewGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
-        }
+            turn = true; // Starts with Player 1 (X)
+            turnCount = 0; // turn counts
+            // reset all buttons (game board)
+            try
+            {
+                foreach (Control c in Controls)
+                {
+                    Button b = (Button)c;
+                    b.Enabled = true;
+                    b.Text = "";
+                } //end foreach
+            }
+            catch { }
+        } //end NewGameToolSripMenuItem_Click()
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -42,23 +56,28 @@ namespace Tic_Tac_Toe
 
         private void button_click(object sender, EventArgs e)
         {
-            Button button = (Button)sender;
+            Button b = (Button)sender;
             if (turn)
             {
-                button.Text = "X"; // place the marker using button's text property
+                b.Text = "X"; // place the marker using button's text property  
             }
             else
             {
-                button.Text = "O";
+                b.Text = "O";
             }
             turn = !turn;
-            button.Enabled = false; // disable button to ensure that it cannot be modified by CHEATERS
-
-        }
+            b.Enabled = false; // disable button to ensure that it cannot be modified by CHEATERS
+            turnCount++;
+            // test increment on turnCount
+            // MessageBox.Show(Convert.ToString(turnCount));
+            CheckWin();
+           
+            
+        } //end button_click
         private void CheckWin()
         {
             bool win = false;
-            if ((A1.Text == A2.Text) && (A2.Text == A3.Text)) // HORIZONTAL LINES
+            if ((A1.Text == A2.Text) && (A2.Text == A3.Text && !A3.Enabled)) // HORIZONTAL LINES
             {
                 win = true;
             }
@@ -93,17 +112,48 @@ namespace Tic_Tac_Toe
 
             if (win)
             {
+                disableButtons();
                 string winner = "";
-                if (turn)
+                if (turn) // figure out who the winner is
                 {
-                    winner = "X";
+                    winner = "Player 2";
                 }
                 else
                 {
-                    winner = "O";
+                    winner = "Player 1";
                 }
-                MessageBox.Show(winner + "Wins!");
+                MessageBox.Show(winner + " Wins!");
+            } //end if
+            else
+            {
+                if (turnCount == 9)
+                {
+                    MessageBox.Show("We have a Draw!!");
+                    MessageBox.Show("Please go to [File] and start a [New Game] to determine the Champion!");
+                }
+            } //end else
+        } //end CheckWin()
+        private void disableButtons()
+        {
+            try
+            {
+                foreach (Control c in Controls)
+                {
+                    Button b = (Button)c;
+                    b.Enabled = false;
+                } //end foreach
             }
+            catch { }
+        } //end disableButtons()
+
+        private void Label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Label2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
