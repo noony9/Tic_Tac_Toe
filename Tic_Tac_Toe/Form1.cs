@@ -15,8 +15,6 @@ namespace Tic_Tac_Toe
         // deterimine who's turn it is
         bool turn = true; // true equals Player 1 turn (X); false = Player 2 turn (O)
         int turnCount = 0; // to increment each turn (for Draw)
-        int playerOneScore = 0;
-        int playerTwoScore = 0;
         public Form1()
         {
             InitializeComponent();
@@ -36,17 +34,19 @@ namespace Tic_Tac_Toe
         {
             turn = true; // Starts with Player 1 (X)
             turnCount = 0; // turn counts
+       
             // reset all buttons (game board)
-            try
-            {
-                foreach (Control c in Controls)
+         
+                foreach (var c in this.Controls)
                 {
-                    Button b = (Button)c;
-                    b.Enabled = true;
-                    b.Text = "";
+                    if (c.GetType().Equals(typeof(Button)))
+                    {
+                        Button b = c as Button;
+                        b.Text = string.Empty;
+                        b.Enabled = true;
+                    }
                 } //end foreach
-            }
-            catch { }
+         
         } //end NewGameToolSripMenuItem_Click()
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -54,7 +54,7 @@ namespace Tic_Tac_Toe
             Application.Exit();
         }
 
-        private void button_click(object sender, EventArgs e)
+        private void Button_click(object sender, EventArgs e)
         {
             Button b = (Button)sender;
             if (turn)
@@ -71,8 +71,7 @@ namespace Tic_Tac_Toe
             // test increment on turnCount
             // MessageBox.Show(Convert.ToString(turnCount));
             CheckWin();
-           
-            
+    
         } //end button_click
         private void CheckWin()
         {
@@ -112,15 +111,17 @@ namespace Tic_Tac_Toe
 
             if (win)
             {
-                disableButtons();
+                DisableButtons();
                 string winner = "";
                 if (turn) // figure out who the winner is
                 {
                     winner = "Player 2";
+                    player2Score.Text = (Int32.Parse(player2Score.Text) + 1).ToString();
                 }
                 else
                 {
                     winner = "Player 1";
+                    player1Score.Text = (Int32.Parse(player1Score.Text) + 1).ToString();
                 }
                 MessageBox.Show(winner + " Wins!");
             } //end if
@@ -129,29 +130,23 @@ namespace Tic_Tac_Toe
                 if (turnCount == 9)
                 {
                     MessageBox.Show("We have a Draw!!");
-                    MessageBox.Show("Please go to [File] and start a [New Game] to determine the Champion!");
+                    drawScore.Text = (Int32.Parse(drawScore.Text) + 1).ToString();
                 }
             } //end else
         } //end CheckWin()
-        private void disableButtons()
+        private void DisableButtons()
         {
-            try
+            foreach (var c in this.Controls)
             {
-                foreach (Control c in Controls)
+                if (c.GetType().Equals(typeof(Button)))
                 {
-                    Button b = (Button)c;
+                    Button b = c as Button;
                     b.Enabled = false;
-                } //end foreach
-            }
-            catch { }
+                }
+            } //end foreach    
         } //end disableButtons()
 
-        private void Label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Label2_Click(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
 
         }
